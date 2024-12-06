@@ -18,9 +18,7 @@ export class SpidersComponent {
   }
 
   getUsers(){
-    this.auth.getUsers().subscribe(
-      (users)=>console.log ("Users", users)
-    )
+
   }
   pushSpider(){
     this.base.pushSpider()

@@ -8,12 +8,18 @@
 
 #firebase
 
-/functions/spider-116a2-firebase-adminsdk-b0i5e-1a99efdc5b.json
+functions/spider-116a2-firebase-adminsdk-b0i5e-1a99efdc5b.json
+functions/spider-116a2-firebase-adminsdk-b0i5e-eef1e69d3b.json
 /src/environments/environments.ts
 /src/environments/environments.prod.ts
+src/environments/environments.ts
+src/environments/environments.prod.ts
 /functions/node_modules
+functions/node_modules
 /.firebase
-/dist
+
+dist/
+public/
 .firebaserc
 firebase.json
 

@@ -18,8 +18,11 @@
           <li *ngIf="!user" class="nav-item">
             <a class="nav-link" routerLink="signin">Sign In</a>
           </li>
+          <li *ngIf="user?.claims.admin" class="nav-item">
+            <a class="nav-link" routerLink="users">Users</a>
+          </li>
 
-          <li *ngIf="user" class="nav-item">
+          <li  class="nav-item">
             <a class="nav-link" (click)="logout()">Logout</a>
           </li>
          

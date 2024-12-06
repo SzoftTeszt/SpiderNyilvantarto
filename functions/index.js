@@ -6,18 +6,18 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin =require("firebase-admin")
 
-var serviceAccount = require("./spider-116a2-firebase-adminsdk-b0i5e-1a99efdc5b.json");
+var serviceAccount = require("");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://spider-116a2-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL: ""
 });
 
 const app=express();
 
 app.use(cors({origin:'*'}));
 
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 
 const verifyToken= (req,res, next)=>{
     const idToken= req.headers.authorization;
@@ -34,24 +34,68 @@ const verifyToken= (req,res, next)=>{
     })
 }
 
+const verifyAdmin =(req,res, next)=>{
+  console.log(req.user)
+  if (req.user && req.user.admin){
+    next()
+  }else{
+    res.status(403).json({message:"Hozzádférés megtagadva!"})
+  }
+}
 
-app.get('/users', verifyToken, (req, res) => {
-    admin
-      .auth()
-      .listUsers()
-      .then((userRecords) => {
-        const users = userRecords.users.map((user) => ({
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          
-         
-        }));
-        res.json(users);
-      })
-      .catch((error) => {
-        console.error('Hiba történt a felhasználók lekérésekor:', error);
-        res.sendStatus(500);
-      });
-    });
+app.get('/users', async (req, res) => {
+  try{
+    const userRecords=await admin.auth().listUsers()
+    const userWithClaims=await Promise.all(userRecords.users.map(
+      async (user)=>{
+        console.log("User:", user)
+        const userDetails= await admin.auth().getUser(user.uid)
+        return {
+          uid: userDetails.uid,
+          email: userDetails.email,
+          displayName: userDetails.displayName,
+          photoURL: userDetails.photoURL,
+          claims:userDetails.customClaims || {}
+        }
+      }
+    )
+  )
+    res.json(userWithClaims)
+  }
+    catch (error)  {
+      console.error('Hiba történt a felhasználók lekérésekor:', error);
+      res.sendStatus(500);
+    }
+  })
+
+
+    // {
+    //   "uid":"FXiuF4mFw2eXOdpHLQ8QWe8ACzf1",
+    //   "claims":{"admin":false}
+    //   }
+
+app.post('/setCustomClaims',verifyToken, verifyAdmin, (req,res)=>{
+  const {uid, claims} = req.body
+  console.log("uid", uid)
+  console.log("claims", claims)
+  admin.auth().setCustomUserClaims(uid, claims)
+  .then(()=>res.json({message:"OK"}))
+  .catch((error)=>{
+    console.log("Hiba a claimsok beállításánál! ",error)
+    res.sendStatus(500)
+  })
+})
+
+app.get('/getClaims/:uid', (req,res)=>{
+  const {uid}= req.params
+  admin.auth().getUser(uid).then(
+    (user)=>{
+      res.json(user.customClaims || {})
+    }
+  ).catch((error)=>{
+    console.log("Hiba a claimsok lekérdezésénél! ",error)
+    res.sendStatus(500)
+  }
+)})
+
 exports.api =onRequest(app);

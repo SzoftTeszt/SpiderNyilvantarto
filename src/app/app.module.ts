@@ -15,6 +15,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { VerifyemailComponent } from './verifyemail/verifyemail.component';
 import { provideHttpClient } from '@angular/common/http';
+import { UsersComponent } from './users/users.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { provideHttpClient } from '@angular/common/http';
     SpidersComponent,
     NavbarComponent,
     SignInComponent,
-    VerifyemailComponent
+    VerifyemailComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,
