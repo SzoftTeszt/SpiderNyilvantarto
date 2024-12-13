@@ -16,6 +16,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { VerifyemailComponent } from './verifyemail/verifyemail.component';
 import { provideHttpClient } from '@angular/common/http';
 import { UsersComponent } from './users/users.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { UsersComponent } from './users/users.component';
     NavbarComponent,
     SignInComponent,
     VerifyemailComponent,
-    UsersComponent
+    UsersComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

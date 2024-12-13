@@ -42,8 +42,16 @@ const verifyAdmin =(req,res, next)=>{
     res.status(403).json({message:"Hozzádférés megtagadva!"})
   }
 }
+const verifyModerator =(req,res, next)=>{
+  console.log(req.user)
+  if (req.user && req.user.moderator){
+    next()
+  }else{
+    res.status(403).json({message:"Hozzádférés megtagadva!"})
+  }
+}
 
-app.get('/users', async (req, res) => {
+app.get('/users',verifyToken,verifyModerator, async (req, res) => {
   try{
     const userRecords=await admin.auth().listUsers()
     const userWithClaims=await Promise.all(userRecords.users.map(
@@ -74,7 +82,7 @@ app.get('/users', async (req, res) => {
     //   "claims":{"admin":false}
     //   }
 
-app.post('/setCustomClaims',verifyToken, verifyAdmin, (req,res)=>{
+app.post('/setCustomClaims',verifyToken,verifyAdmin ,(req,res)=>{
   const {uid, claims} = req.body
   console.log("uid", uid)
   console.log("claims", claims)
@@ -97,5 +105,30 @@ app.get('/getClaims/:uid', (req,res)=>{
     res.sendStatus(500)
   }
 )})
+
+
+app.patch("/updateUser", verifyToken, async(req,res)=>{
+  try{
+    const {displayName, phoneNumber}= req.body
+    const uid= req.user.uid
+
+    const updateUser = await admin.auth().updateUser(uid,{
+      displayName, phoneNumber
+    })
+    res.json({
+      message:"Felhasználói adatok sikeresen frissítve",
+      user:{
+        uid:updateUser.uid,
+        email:updateUser.email,
+        displayName:updateUser.displayName,
+        phoneNumber: updateUser.phoneNumber
+      }
+    })
+  }
+  catch(error){
+    console.log("Hiba a felhasználói adatok frissítésekor!", error)
+    res.status(500).json({message:"Hiba a felhasználói adatok frissitésekor!"})
+  }
+})
 
 exports.api =onRequest(app);

@@ -30,6 +30,18 @@ export class SignUPComponent {
 
       .catch(()=>console.log("Hiba a Google belépésnél!"))
   }
+  facebookAuth(){
+    this.auth.facebookAuth()
+      .then(
+        ()=>
+          {
+            console.log("Sikeres Facebook regiszráció!")
+            this.router.navigate(['spiders'])
+          }
+    )
+
+      .catch(()=>console.log("Hiba a Facebook belépésnél!"))
+  }
 
   signUpMailPassword(){
     console.log(this.email,"; ",this.password)

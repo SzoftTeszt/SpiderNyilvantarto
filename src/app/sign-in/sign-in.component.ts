@@ -29,6 +29,19 @@ export class SignInComponent {
       .catch(()=>console.log("Hiba a Google belépésnél!"))
   }
 
+  facebookAuth(){
+    this.auth.facebookAuth()
+      .then(
+        ()=>
+          {
+            console.log("Beléptél Facebook-val!")
+            this.router.navigate(['spiders'])
+          }
+    )
+
+      .catch(()=>console.log("Hiba a Facebook belépésnél!"))
+  }
+
   signIn(){
     console.log(this.email,"; ",this.password)
     this.auth.signInMailPassword(this.email, this.password).then(
@@ -45,5 +58,9 @@ export class SignInComponent {
       }
     )
 
+  }
+
+  forgotPassword(){
+    this.auth.forgotPassword(this.email)
   }
 }

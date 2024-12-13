@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { GoogleAuthProvider } from '@angular/fire/auth';
+import { FacebookAuthProvider, GoogleAuthProvider } from '@angular/fire/auth';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -13,8 +13,8 @@ export class AuthService {
   loggedUser:any
   private userSub= new BehaviorSubject<any>(null)
   private adminSub= new BehaviorSubject<boolean>(false)
-  // apiUrl="http://127.0.0.1:5001/spider-116a2/us-central1/api/"
-  apiUrl="https://api-k6azligg6q-uc.a.run.app/"
+  apiUrl="http://127.0.0.1:5001/spider-116a2/us-central1/api/"
+  // apiUrl="https://api-k6azligg6q-uc.a.run.app/"
 
   constructor(private afAuth:AngularFireAuth, private router:Router, private http:HttpClient) {
     this.afAuth.authState.subscribe(
@@ -81,6 +81,15 @@ export class AuthService {
       }
       return null
   }
+  updateUser(displayName:any, phoneNumber:any){
+    if (this.loggedUser.accessToken)
+      {
+        let body={displayName, phoneNumber}
+        const headers= new HttpHeaders().set('Authorization',this.loggedUser.accessToken)
+        return this.http.patch(this.apiUrl+"updateUser",body, {headers})
+      }
+      return null
+  }
 
    getLoggedUser(){
     return this.userSub
@@ -88,6 +97,9 @@ export class AuthService {
 
   googleAuth(){
     return this.afAuth.signInWithPopup(new GoogleAuthProvider())
+  }
+  facebookAuth(){
+    return this.afAuth.signInWithPopup(new FacebookAuthProvider())
   }
   signOut(){
     return this.afAuth.signOut()
@@ -114,5 +126,12 @@ export class AuthService {
   }
   signInMailPassword(email:string, password:string){
     return this.afAuth.signInWithEmailAndPassword(email, password)
+  }
+
+
+  forgotPassword(email:any){
+    this.afAuth.sendPasswordResetEmail(email).then(
+      ()=>console.log("mail elküldve!")
+    )
   }
 }
