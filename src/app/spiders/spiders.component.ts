@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseService } from '../base.service';
 import { AuthService } from '../auth.service';
+import { EmailService } from '../email.service';
 
 @Component({
   selector: 'app-spiders',
@@ -11,7 +12,7 @@ export class SpidersComponent {
 
   spiders:any
 
-  constructor(private base:BaseService, private auth:AuthService){
+  constructor(private base:BaseService, private auth:AuthService, private email:EmailService){
     this.base.getSpiders().valueChanges().subscribe(
       (res)=> this.spiders=res
     )
@@ -22,5 +23,9 @@ export class SpidersComponent {
   }
   pushSpider(){
     this.base.pushSpider()
+  }
+
+  sendMail(){
+    this.email.sendMail()
   }
 }

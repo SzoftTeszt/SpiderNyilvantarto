@@ -16,30 +16,41 @@ export class AuthService {
   apiUrl="http://127.0.0.1:5001/spider-116a2/us-central1/api/"
   // apiUrl="https://api-k6azligg6q-uc.a.run.app/"
 
+
   constructor(private afAuth:AngularFireAuth, private router:Router, private http:HttpClient) {
     this.afAuth.authState.subscribe(
       (user:any)=>{
         if (user){
           this.loggedUser=user?._delegate
-
-          const headers= new HttpHeaders().set('Authorization',this.loggedUser.accessToken)
-          this.http.get(this.apiUrl+"getClaims/"+user.uid, {headers}).subscribe(
-            {
-              next:(claims)=>{ 
-                  this.loggedUser.claims=claims
-                  this.userSub.next(this.loggedUser)
-                  this.adminSub.next(this.loggedUser.claims.admin==true)
-                  console.log("User: ",this.loggedUser)
-                },
-              error:(error)=>{
-                console.log(error)
-                this.loggedUser=null
-                this.userSub.next(null)
-                this.adminSub.next(false)
-              }
-              
-          }
+          console.log("ZUser", user)
+         
+          user.getIdToken().then(
+          (t:any)=>{
+            console.log("Token",t)
+            this.loggedUser.accessToken=t
+            const headers= new HttpHeaders().set('Authorization',this.loggedUser.accessToken)
+            this.http.get(this.apiUrl+"getClaims/"+user.uid, {headers}).subscribe(
+              {
+                next:(claims)=>{ 
+                    this.loggedUser.claims=claims
+                    this.userSub.next(this.loggedUser)
+                    this.adminSub.next(this.loggedUser.claims.admin==true)
+                    console.log("User: ",this.loggedUser)
+                  },
+                error:(error)=>{
+                  console.log(error)
+                  this.loggedUser=null
+                  this.userSub.next(null)
+                  this.adminSub.next(false)
+                }
+                
+            }
+            )
+          })
+          .catch(
+          (error:any)=>console.log(error)
           )
+      
 
           // user.getIdToken().then(
           //   (t:any)=>{
@@ -81,12 +92,12 @@ export class AuthService {
       }
       return null
   }
-  updateUser(displayName:any, phoneNumber:any){
+  updateUser(displayName:any, phoneNumber:any, email:any){
     if (this.loggedUser.accessToken)
       {
-        let body={displayName, phoneNumber}
+        let body={displayName, phoneNumber, email}
         const headers= new HttpHeaders().set('Authorization',this.loggedUser.accessToken)
-        return this.http.patch(this.apiUrl+"updateUser",body, {headers})
+        return this.http.patch(this.apiUrl+"updateUser/",body, {headers})
       }
       return null
   }

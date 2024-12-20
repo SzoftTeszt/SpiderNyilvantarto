@@ -21,6 +21,11 @@
                 <input [(ngModel)]="loggedUser.phoneNumber" type="text" class="form-control" id="phoneInput">
                 <label for="phoneInput">Phone number</label>
             </div>    
+
+            <div class="form-floating mb-3">
+                <input [(ngModel)]="loggedUser.email" type="email" class="form-control" id="email">
+                <label for="email">E-Mail</label>
+            </div>    
       <div class="form-floating my-3">
         <button type="button" (click)="saveChanges()"  class="btn btn-primary">Save</button>
         <span class="ms-3"> 

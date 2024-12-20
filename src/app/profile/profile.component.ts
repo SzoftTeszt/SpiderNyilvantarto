@@ -15,7 +15,7 @@ export class ProfileComponent {
   }
 
   saveChanges(){
-    this.auth.updateUser(this.loggedUser.displayName, this.loggedUser.phoneNumber)?.subscribe(
+    this.auth.updateUser(this.loggedUser.displayName, this.loggedUser.phoneNumber, this.loggedUser.email)?.subscribe(
       (res)=>console.log("Update", res)
     )
   }
