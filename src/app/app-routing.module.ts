@@ -6,8 +6,10 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { VerifyemailComponent } from './verifyemail/verifyemail.component';
 import { UsersComponent } from './users/users.component';
 import { adminGuard } from './admin.guard';
+
 import { ProfileComponent } from './profile/profile.component';
 import { isloggedGuard } from './islogged.guard';
+import { loggedUserGuard } from './logged-user.guard';
 
 const routes: Routes = [
   {path:"spiders", component:SpidersComponent},
@@ -16,7 +18,7 @@ const routes: Routes = [
   {path:"verifymail", component:VerifyemailComponent},
   {path:"users", component:UsersComponent, canActivate:[adminGuard]},
   // {path:"users", component:UsersComponent},
-  {path:"profile", component:ProfileComponent, canActivate:[isloggedGuard]},
+  {path:"profile", component:ProfileComponent, canActivate:[loggedUserGuard]},
   {path:"", redirectTo:"signup", pathMatch:"full"},
 ];
 

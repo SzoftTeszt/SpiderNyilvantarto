@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin =require("firebase-admin")
 
-var serviceAccount = require("./spider-116a2-firebase-adminsdk-b0i5e-1a99efdc5b.json");
+var serviceAccount = require("./spider-116a2-firebase-adminsdk-b0i5e-a1c77d51b7.json");
 
 const { LOG_ERROR } = require("karma/lib/constants");
 
@@ -54,7 +54,8 @@ const verifyModerator =(req,res, next)=>{
   }
 }
 
-app.get('/users',verifyToken,verifyAdmin, async (req, res) => {
+// app.get('/users',verifyToken,  async (req, res) => {
+app.get('/users',verifyToken, verifyAdmin, async (req, res) => {
   try{
     const userRecords=await admin.auth().listUsers()
     const userWithClaims=await Promise.all(userRecords.users.map(
@@ -82,8 +83,8 @@ app.get('/users',verifyToken,verifyAdmin, async (req, res) => {
     }
   })
 
-app.post('/setCustomClaims',verifyToken ,(req,res)=>{
-// app.post('/setCustomClaims',verifyToken,verifyAdmin ,(req,res)=>{
+// app.post('/setCustomClaims',verifyToken ,(req,res)=>{
+app.post('/setCustomClaims',verifyToken,verifyAdmin ,(req,res)=>{
   const {uid, claims} = req.body
   admin.auth().setCustomUserClaims(uid, claims)
   .then(()=>res.json({message:"OK"}))
