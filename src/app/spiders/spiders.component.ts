@@ -11,6 +11,7 @@ import { EmailService } from '../email.service';
 export class SpidersComponent {
 
   spiders:any
+  character:any
 
   constructor(private base:BaseService, private auth:AuthService, private email:EmailService){
     this.base.getSpiders().valueChanges().subscribe(
@@ -27,5 +28,11 @@ export class SpidersComponent {
 
   sendMail(){
     this.email.sendMail()
+  }
+
+  getCharacter(){
+    this.auth.getCharacter().subscribe(
+      (res)=>this.character=res
+    )
   }
 }

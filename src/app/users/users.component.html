@@ -3,7 +3,7 @@
 <div *ngFor="let user of users" class="row my-2">
 
     <div class="col">
-        <img *ngIf="user.photoURL" [src]="user.photoURL" class="img-thumbnail" alt="...">
+        <img referrerpolicy="no-referrer" *ngIf="user.photoURL" [src]="user.photoURL" class="img-thumbnail" alt="...">
     </div>
     <div class="col">
         {{user.displayName}}

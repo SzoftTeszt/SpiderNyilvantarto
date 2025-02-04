@@ -14,6 +14,7 @@ export class AuthService {
   private userSub= new BehaviorSubject<any>(null)
   private adminSub= new BehaviorSubject<boolean>(false)
   private loggedUserSub= new BehaviorSubject<boolean>(false)
+
   apiUrl="http://127.0.0.1:5001/spider-116a2/us-central1/api/"
   // apiUrl="https://api-k6azligg6q-uc.a.run.app/"
 
@@ -153,4 +154,10 @@ export class AuthService {
       ()=>console.log("mail elküldve!")
     )
   }
+  getCharacter(){
+    let url="https://localhost:7165/api/Characters"
+
+    let headers= new HttpHeaders().set('Authorization',`Bearer ${this.loggedUser.accessToken}`)
+    return this.http.get(url, {headers})
+  } 
 }
