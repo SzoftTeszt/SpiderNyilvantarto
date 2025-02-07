@@ -1,2 +1,5 @@
 node_modules/
 *.local
+*.log
+functions\spider-116a2-firebase-adminsdk-b0i5e-eef1e69d3b.json
+spider-116a2-firebase-adminsdk-b0i5e-eef1e69d3b.json

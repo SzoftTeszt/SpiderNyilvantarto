@@ -5,7 +5,7 @@
 /tmp
 /out-tsc
 /bazel-out
-
+spider-116a2-firebase-adminsdk-b0i5e-c8a3031277.json
 spider-116a2-firebase-adminsdk-b0i5e-371de8d2cc.json
 environment.prod.ts
 environment.ts
@@ -22,6 +22,8 @@ src/environments/environments.prod.ts
 functions/node_modules
 environments.ts
 environments.prod.ts
+environment.prod.ts
+environment.ts
 /.firebase
 
 dist/

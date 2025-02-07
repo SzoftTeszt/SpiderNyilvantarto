@@ -8,5 +8,5 @@ export const environment={
       storageBucket: "spider-116a2.firebasestorage.app",
       messagingSenderId: "843244814928",
       appId: "1:843244814928:web:c2176661dbb248a0740755"
-      }
+}
 }

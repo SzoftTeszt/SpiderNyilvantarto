@@ -8,7 +8,6 @@ import { UsersComponent } from './users/users.component';
 import { adminGuard } from './admin.guard';
 
 import { ProfileComponent } from './profile/profile.component';
-import { isloggedGuard } from './islogged.guard';
 import { loggedUserGuard } from './logged-user.guard';
 
 const routes: Routes = [

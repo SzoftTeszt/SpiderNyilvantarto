@@ -6,8 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin =require("firebase-admin")
 
-var serviceAccount = require("./spider-116a2-firebase-adminsdk-b0i5e-371de8d2cc.json");
-
+var serviceAccount = require("./spider-116a2-firebase-adminsdk-b0i5e-c8a3031277.json");
 const { LOG_ERROR } = require("karma/lib/constants");
 
 admin.initializeApp({
@@ -32,7 +31,7 @@ const verifyToken= (req,res, next)=>{
     )
     .catch((error)=>{
         console.log("Hiba a token ellenőrzésekot!");        
-        res.status(401).json({message:"Hozzádférés megtagadva, csak bejentkezett felhasználóknak érhető el!"})
+        res.status(401).json({message:"Hozzáférés megtagadva, csak bejelentkezett felhasználóknak érhető el!"})
 
     })
 }
@@ -42,7 +41,7 @@ const verifyAdmin =(req,res, next)=>{
   if (req.user && req.user.admin){
     next()
   }else{
-    res.status(403).json({message:"Hozzádférés megtagadva, csak 'admin'-oknak érhető el!"})
+    res.status(403).json({message:"Hozzáférés megtagadva, csak 'admin'-oknak érhető el!"})
   }
 }
 const verifyModerator =(req,res, next)=>{
@@ -50,12 +49,11 @@ const verifyModerator =(req,res, next)=>{
   if (req.user && req.user.moderator){
     next()
   }else{
-    res.status(403).json({message:"Hozzádférés megtagadvacsak 'moderator'-oknak érhető el!"})
+    res.status(403).json({message:"Hozzáférés megtagadva, csak 'moderator'-oknak érhető el!"})
   }
 }
 
-// app.get('/users',verifyToken,  async (req, res) => {
-app.get('/users',verifyToken, verifyAdmin, async (req, res) => {
+app.get('/users',verifyToken,verifyAdmin, async (req, res) => {
   try{
     const userRecords=await admin.auth().listUsers()
     const userWithClaims=await Promise.all(userRecords.users.map(
@@ -94,9 +92,7 @@ app.post('/setCustomClaims',verifyToken ,(req,res)=>{
 })
 
 app.get('/getClaims/:uid?',verifyToken, (req,res)=>{
-  
   let {uid}= req.params
-  console.log("UID",uid)
   if (!uid || !req.user.admin) uid = req.user.uid
   admin.auth().getUser(uid).then(
     (user)=>{
@@ -109,57 +105,48 @@ app.get('/getClaims/:uid?',verifyToken, (req,res)=>{
 )})
 
 
-  app.patch("/updateUser", verifyToken, async (req, res) => {
-    try {
-      let {uid, email, password, displayName, phoneNumber, photoURL, emailVerified, disabled, claims } = req.body;
-      if (!req.user.admin) {
-         uid = req.user.uid
-         emailVerified = undefined
-         disabled= undefined
-         claims=undefined
-         email=undefined
-        };
+app.patch("/updateUser", verifyToken, async (req, res) => {
+  try {
+    let {uid, email, password, displayName, phoneNumber, photoURL, emailVerified, disabled, claims } = req.body;
+    if (!req.user.admin) {
+       uid = req.user.uid
+       emailVerified = undefined
+       disabled= undefined
+       claims=undefined
+       email=undefined
+      };
 
 
-      if (!uid)  uid = req.user.uid
-      // console.log("Update", {
-      //   email,
-      //   password,
-      //   displayName,
-      //   phoneNumber,
-      //   photoURL,
-      //   emailVerified,
-      //   disabled,
-      // })
-      const updatedUser = await admin.auth().updateUser(uid, {
-        email,
-        password,
-        displayName,
-        phoneNumber,
-        photoURL,
-        emailVerified,
-        disabled,
-      });  
-      if (claims) {
-        await admin.auth().setCustomUserClaims(uid, claims);
-      }  
-      res.json({
-        message: "Felhasználói adatok sikeresen frissítve.",
-        user: {
-          uid: updatedUser.uid,
-          email: updatedUser.email,
-          displayName: updatedUser.displayName,
-          phoneNumber: updatedUser.phoneNumber,
-          photoURL: updatedUser.photoURL,
-          emailVerified: updatedUser.emailVerified,
-          disabled: updatedUser.disabled,
-          claims: claims || {} 
-        },
-      });
-    } catch (error) {
-      console.error("Hiba a felhasználói adatok frissítésekor:", error);
-      res.status(500).json({ message: "Hiba történt a felhasználói adatok frissítésekor!",error:error });
-    }
-  });
+    if (!uid)  uid = req.user.uid
+    const updatedUser = await admin.auth().updateUser(uid, {
+      email,
+      password,
+      displayName,
+      phoneNumber,
+      photoURL,
+      emailVerified,
+      disabled,
+    });  
+    if (claims) {
+      await admin.auth().setCustomUserClaims(uid, claims);
+    }  
+    res.json({
+      message: "Felhasználói adatok sikeresen frissítve.",
+      user: {
+        uid: updatedUser.uid,
+        email: updatedUser.email,
+        displayName: updatedUser.displayName,
+        phoneNumber: updatedUser.phoneNumber,
+        photoURL: updatedUser.photoURL,
+        emailVerified: updatedUser.emailVerified,
+        disabled: updatedUser.disabled,
+        claims: claims || {} 
+      },
+    });
+  } catch (error) {
+    console.error("Hiba a felhasználói adatok frissítésekor:", error);
+    res.status(500).json({ message: "Hiba történt a felhasználói adatok frissítésekor!",error:error });
+  }
+});
 
 exports.api =onRequest(app);
